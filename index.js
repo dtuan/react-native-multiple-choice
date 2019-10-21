@@ -3,7 +3,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Text, TouchableOpacity, View, Image, ListView, ViewPropTypes } from "react-native";
+import { Text, TouchableOpacity, View, Image, FlatList, ViewPropTypes } from "react-native";
 
 import BaseComponent from './BaseComponent'
 import Styles from './styles'
@@ -35,11 +35,11 @@ class MultipleChoice extends BaseComponent {
     constructor(props) {
         super(props);
 
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => true});
-        this.ds = ds;
+        // const ds = new FlatList.DataSource({rowHasChanged: (r1, r2) => true});
+        // this.ds = ds;
 
         this.state = {
-            dataSource: ds.cloneWithRows(this.props.options),
+            // dataSource: ds.cloneWithRows(this.props.options),
             selectedOptions: this.props.selectedOptions || [],
             disabled: this.props.disabled
         };
@@ -61,7 +61,7 @@ class MultipleChoice extends BaseComponent {
     _updateSelectedOptions(selectedOptions) {
         this.setState({
             selectedOptions,
-            dataSource: this.ds.cloneWithRows(this.props.options)
+            // dataSource: this.ds.cloneWithRows(this.props.options)
         });
     }
 
@@ -131,7 +131,7 @@ class MultipleChoice extends BaseComponent {
         return (<Text>{option}</Text>);
     }
 
-    _renderRow(option) {
+    _renderRow({ item: option, index }) {
 
         if(typeof this.props.renderRow === 'function') {
             return this.props.renderRow(option);
@@ -161,10 +161,13 @@ class MultipleChoice extends BaseComponent {
 
     render() {
         return (
-            <ListView
+            <FlatList
                 style={[Styles.list, this.props.style]}
-                dataSource={this.state.dataSource}
-                renderRow={this._renderRow}
+                // dataSource={this.props.options}
+                // renderRow={this._renderRow}
+                data={this.props.options}
+                renderItem={this._renderRow}
+                keyExtractor={item => item}
             />
         );
     }
